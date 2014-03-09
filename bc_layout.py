@@ -28,7 +28,7 @@ def site_footer ():
 	yield """
 			</div>
 			<div id="donor_box">
-				BlockCrawler Script Created By Jake Paysnoe - Donations: 1MoWrpf4DjLiL1ALtE6WAAPfHj1aZt38CE
+				Donations: RTvFbTNfhurjiLPzZia1djJ7sUWVA6EtEe
 			</div>
 		</body>
 		</html>
