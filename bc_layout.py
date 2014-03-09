@@ -16,7 +16,7 @@ def site_header (title, auth_list=""):
 			<div id="site_head">
 				<div id="site_head_logo">
 					<h1><a href="." title="Home Page">
-						Block Crawler
+						Riecoin Block Crawler
 					</a></h1>
 				</div>
 			</div>
@@ -100,7 +100,7 @@ def block_detail (block_id, hash=False):
 
 		yield from detail_display ("Merkle Root", raw_block["merkleroot"])
 
-		yield from detail_display ("Block Hash", blockhash_link (raw_block["hash"]))
+		yield from detail_display ("Block Hash", blockhash_link (raw_block["hash"]), html=True)
 
 		yield """<div class="blocknav">"""
 
@@ -143,7 +143,7 @@ def tx_detail (tx_id):
 		yield from detail_display ("TX Time", strtoout (raw_tx["time"]))
 		yield from detail_display ("Lock Time", raw_tx["locktime"])
 		yield from detail_display ("Confirmations", raw_tx["confirmations"])
-		yield from detail_display ("Block Hash", blockhash_link (raw_tx["blockhash"]))
+		yield from detail_display ("Block Hash", blockhash_link (raw_tx["blockhash"]), html=True)
 		yield from detail_display ("HEX Data", raw_tx["hex"])
 		yield from section_head ("Transaction Inputs")
 		for key,txin in enumerate(raw_tx["vin"]):
@@ -152,7 +152,7 @@ def tx_detail (tx_id):
 				yield from detail_display ("Coinbase", txin["coinbase"])
 				yield from detail_display ("Sequence", txin["sequence"])
 			else:
-				yield from detail_display ("TX ID", tx_link (txin["txid"]))
+				yield from detail_display ("TX ID", tx_link (txin["txid"]), html=True)
 				yield from detail_display ("TX Output", txin["vout"])
 				yield from detail_display ("TX Sequence", txin["sequence"])
 				yield from detail_display ("Script Sig (ASM)", txin["scriptSig"]["asm"])
@@ -176,7 +176,7 @@ def tx_detail (tx_id):
 		yield cgi.escape(json.dumps(raw_tx,indent=4))
 		yield "</textarea><br><br>"
 
-def detail_display (title, data):
+def detail_display (title, data, html=False):
 		yield """<div class="detail_display">
 			<div class="detail_title">
 				{title}
@@ -185,7 +185,7 @@ def detail_display (title, data):
 
 		yield """<div class="detail_data">
 			{data}
-		</div>""".format(data=" ".join(textwrap.wrap(str(data), 50)))
+		</div>""".format(data=data if html else "&shy;".join(cgi.escape(x) for x in textwrap.wrap(str(data), 50)))
 		yield "</div>"
 		yield "<div style='clear:both'></div>"
 
