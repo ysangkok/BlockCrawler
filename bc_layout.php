@@ -173,7 +173,7 @@
 		echo "	</div>\n";
 		echo "\n";
 		
-		echo "	<div class=\"txlist_header\">\n";
+		echo "	<div class=\"section_head\">\n";
 		echo "		Transactions In This Block\n";		
 		echo "	</div>\n";
 		echo "\n";
