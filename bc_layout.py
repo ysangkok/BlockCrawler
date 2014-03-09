@@ -94,8 +94,9 @@ def block_detail (block_id, hash=False):
 
 		yield from detail_display ("Block Offset", raw_block["nOffset"])
 
-		for offset,prime in get_primes_from_block(raw_block):
-			yield from detail_display("Prime n+{}".format(offset), prime)
+		if raw_block["height"] != 0:
+			for offset,prime in get_primes_from_block(raw_block):
+				yield from detail_display("Prime n+{}".format(offset), prime)
 
 		yield from detail_display ("Merkle Root", raw_block["merkleroot"])
 
