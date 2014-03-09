@@ -1,12 +1,15 @@
 <?php
+error_reporting(-1);
+ini_set("display_errors",1);
+date_default_timezone_set("UTC");
 
 /******************************************************************************
 	Wallet Configuration
 ******************************************************************************/
 	$GLOBALS["wallet_ip"] = "127.0.0.1";
-	$GLOBALS["wallet_port"] = "8332";
-	$GLOBALS["wallet_user"] = "usrename";
-	$GLOBALS["wallet_pass"] = "password";
+	$GLOBALS["wallet_port"] = "28332";
+	$GLOBALS["wallet_user"] = "";
+	$GLOBALS["wallet_pass"] = "boing9884";
 	
 
 /******************************************************************************
@@ -68,6 +71,7 @@
 	
 	function getnetworkhashps ($block_index=NULL)
 	{
+		return "N/A, PoW not hash-based in Riecoin";
 	//	The JSON-RPC request starts with a method name
 		$request_array["method"] = "getnetworkhashps";
 	
@@ -155,12 +159,13 @@
 		
 	//	The JSON response is read into an array
 		$info = json_decode ($response_data, TRUE);
+		if ($info === NULL) throw new Exception(var_export($response_data, true));
 		
 	//	If an error message was received the message is returned
 	//	to the calling code as a string.	
 		if (isset ($info["error"]) || $info["error"] != "")
 		{
-			return $info["error"]["message"]."(Error Code: ".$info["error"]["code"].")";
+			throw new Exception(var_export($request_array,true) . $info["error"]["message"]."(Error Code: ".$info["error"]["code"].")");
 		}
 		
 	//	If there was no error the result is returned to the calling code

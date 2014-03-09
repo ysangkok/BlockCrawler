@@ -38,32 +38,32 @@
 		
 		$network_info = getinfo ();
 		
-		echo "		<div class=\"node_detail\">\n";
+		echo "		<p class=\"node_detail\">\n";
 		echo "			<span class=\"node_desc\">Block Count:</span><br>\n";
 		echo "			".$network_info["blocks"]."\n";
-		echo "		</div>\n";
+		echo "		</p>\n";
 		echo "\n";
 
-		echo "		<div class=\"node_detail\">\n";
+		echo "		<p class=\"node_detail\">\n";
 		echo "			<span class=\"node_desc\">Difficulty:</span><br>\n";
 		echo "			".$network_info["difficulty"]."\n";
-		echo "		</div>\n";
+		echo "		</p>\n";
 		echo "\n";
 
-		echo "		<div class=\"node_detail\">\n";
+		echo "		<p class=\"node_detail\">\n";
 		echo "			<span class=\"node_desc\">Connections:</span><br>\n";
 		echo "			".$network_info["connections"]."\n";
-		echo "		</div>\n";
+		echo "		</p>\n";
 		echo "\n";
 
 		$net_speed = getnetworkhashps ();
 		
 		if ($net_speed != "")
 		{
-			echo "		<div class=\"node_detail\">\n";
+			echo "		<p class=\"node_detail\">\n";
 			echo "			<span class=\"node_desc\">Network H/s:</span><br>\n";
 			echo "			".$net_speed."\n";
-			echo "		</div>\n";
+			echo "		</p>\n";
 			echo "\n";
 		}
 		
@@ -101,6 +101,7 @@
 		echo "\n";
 
 		echo "	</div>\n";
+		echo "<div style='clear:both'></div>";
 		echo "\n";
 	}
 	

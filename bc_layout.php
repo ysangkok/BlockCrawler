@@ -78,7 +78,7 @@
 		echo "\n";
 		
 		echo "		<div class=\"blockbanner_right\">\n";
-		echo "			Block Time: ".date ("F j, Y, H:i:s", $raw_block["time"])."\n";
+		echo "			Block Time: ".date ("r", $raw_block["time"])."\n";
 		echo "		</div>\n";
 		echo "\n";
 
@@ -127,14 +127,6 @@
 		echo "\n";
 		
 		echo "		<div class=\"blockdetail_detail\">\n";
-		echo "			<div class=\"blockdetail_header\">Block Nonce</div>\n";		
-		echo "			<div class=\"blockdetail_content\">\n";
-		echo "				".$raw_block["nonce"]."\n";
-		echo "			</div>\n";		
-		echo "		</div>\n";
-		echo "\n";
-		
-		echo "		<div class=\"blockdetail_detail\">\n";
 		echo "			<div class=\"blockdetail_header\">Block Difficulty</div>\n";		
 		echo "			<div class=\"blockdetail_content\">\n";
 		echo "				".$raw_block["difficulty"]."\n";
@@ -142,6 +134,12 @@
 		echo "		</div>\n";
 		echo "\n";
 		
+		echo "	</div>\n";
+		echo "	<div class=\"blockdetail_detail blockoffset\">\n";
+		echo "		<div class=\"blockdetail_header\">Block Offset</div>\n";		
+		echo "		<div class=\"blockdetail_content\">\n";
+		echo "			".$raw_block["nOffset"]."\n";
+		echo "		</div>\n";		
 		echo "	</div>\n";
 		echo "\n";
 		
@@ -152,18 +150,23 @@
 		echo "	<div class=\"blocknav\">\n";
 		echo "\n";
 		
-		echo "		<div class=\"blocknav_prev\">\n";
-		echo "			<a href=\"".$_SERVER["PHP_SELF"]."?block_hash=".$raw_block["previousblockhash"]."\" title=\"View Previous Block\"><- Previous Block</a>\n";
-		echo "		</div>\n";
-		echo "\n";
+		$a = function ($n="prev", $m="previous") use (&$raw_block) {
+			echo "		<div class=\"blocknav_$n\">\n";
+			if (isset($raw_block["${m}blockhash"])) {
+				echo "			<a href=\"".$_SERVER["PHP_SELF"]."?block_hash=".$raw_block["${m}blockhash"]."\" title=\"View $m Block\">";
+			}
+			echo ($n === "prev" ? "<-" : "") . " " . ucwords($m) . " Block " . ($n === "next" ? "->" : "");
+			if (isset($raw_block["${m}blockhash"])) {
+				echo "</a>\n";
+			}
+			echo "		</div>\n";
+			echo "\n";
+		};
+		$a();
+		$a("next","next");
 		
 		echo "		<div class=\"blocknav_news\">\n";
-		echo "			Block Time: ".date ("F j, Y, g:i a", $raw_block["time"])."\n";
-		echo "		</div>\n";
-		echo "\n";
-		
-		echo "		<div class=\"blocknav_next\">\n";
-		echo "			<a href=\"".$_SERVER["PHP_SELF"]."?block_hash=".$raw_block["nextblockhash"]."\" title=\"View Next Block\">Next Block -></a>\n";
+		echo "			Block Time: ".date ("r", $raw_block["time"])."\n";
 		echo "		</div>\n";
 		echo "\n";
 		
@@ -194,6 +197,9 @@
 	function tx_detail ($tx_id)
 	{
 		$raw_tx = getrawtransaction ($tx_id);
+echo "<!--";
+echo htmlentities(var_export($raw_tx,true));
+echo "-->";
 		
 		section_head ("Transaction: ".$raw_tx["txid"]);
 		
@@ -201,7 +207,7 @@
 
 		detail_display ("TX Version", $raw_tx["version"]);
 		
-		detail_display ("TX Time", date ("F j, Y, H:i:s", $raw_tx["time"]));
+		detail_display ("TX Time", date ("r", $raw_tx["time"]));
 		
 		detail_display ("Lock Time", $raw_tx["locktime"]);
 		
@@ -300,6 +306,7 @@
 		}
 		
 		echo "	</div>\n";
+		echo "<div style='clear:both'></div>";
 	}
 
 	function tx_link ($tx_id)
