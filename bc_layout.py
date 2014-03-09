@@ -15,12 +15,9 @@ def site_header (title, auth_list=""):
 		<body>
 			<div id="site_head">
 				<div id="site_head_logo">
-					<h1><a href="{thisscript}" title="Home Page">
+					<h1><a href="." title="Home Page">
 						Block Crawler
 					</a></h1>
-					<h3><a href="{thisscript}" title="Home Page">
-						Block Chain Viewer
-					</a></h3>
 				</div>
 			</div>
 			<div id="page_wrap">
@@ -38,7 +35,7 @@ def site_footer ():
 	"""
 
 def strtoout(s):
-	return str(datetime.datetime.fromtimestamp(int(s)))
+	return datetime.datetime.fromtimestamp(int(s),tz=datetime.timezone.utc).isoformat()
 
 def block_detail (block_id, hash=False):
 		if hash == True:
@@ -109,13 +106,13 @@ def block_detail (block_id, hash=False):
 		def a(n="prev", m="previous"):
 			yield """<div class="blocknav_{n}">""".format(n=n)
 			if m + "blockhash" in raw_block:
-				yield '<a href="?block_hash="' + raw_block[m + "blockhash"]+" title='View "+m+" Block'>"
+				yield '<a href="?block_hash=' + raw_block[m + "blockhash"]+"\" title='View "+m+" Block'>"
 			yield m + " block"
 			if m + "blockhash" in raw_block:
 				yield "</a>"
 			yield "</div>"
-		a()
-		a("next","next")
+		yield from a()
+		yield from a("next","next")
 
 		yield """
 			<div class="blocknav_news">
@@ -172,7 +169,7 @@ def tx_detail (tx_id):
 				for key, address in enumerate(txout["scriptPubKey"]["addresses"]):
 					yield from detail_display ("Address {0}".format(key), address)
 
-		section_head ("Raw Transaction Detail")
+		yield from section_head ("Raw Transaction Detail")
 
 		yield  '<textarea name="rawtrans" rows="25" cols="80" style="text-align:left;">'
 		yield cgi.escape(json.dumps(raw_tx,indent=4))
@@ -187,7 +184,7 @@ def detail_display (title, data):
 
 		yield """<div class="detail_data">
 			{data}
-		</div>""".format(data=" ".join(textwrap.wrap(str(data))))
+		</div>""".format(data=" ".join(textwrap.wrap(str(data), 50)))
 		yield "</div>"
 		yield "<div style='clear:both'></div>"
 

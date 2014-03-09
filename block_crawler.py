@@ -24,7 +24,7 @@ def main(REQUEST):
 		network_info = bc_daemon.getinfo ()
 		yield "		<p class=\"node_detail\">"
 		yield "			<span class=\"node_desc\">Block Count:</span><br>"
-		yield "			"+str(network_info["blocks"])
+		yield "			"+bc_layout.blockheight_link(network_info["blocks"])
 		yield "		</p>"
 	
 		yield "		<p class=\"node_detail\">"
