@@ -6,7 +6,7 @@ import time
 import json
 from riecoin_tools.check_proof_of_work import get_primes_from_block
 
-def site_header (title, auth_list=""):
+def site_header(title, auth_list=""):
 		yield """<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 		<head>
 			<title>{title}</title>
@@ -23,7 +23,7 @@ def site_header (title, auth_list=""):
 			<div id="page_wrap">
 		""".format(thisscript=".", title=title)
 
-def site_footer ():
+def site_footer():
 	#	The page_wrap div is opened in the last line of the site_header function.
 	yield """
 			</div>
@@ -35,15 +35,14 @@ def site_footer ():
 	"""
 
 def strtoout(s):
-	return datetime.datetime.fromtimestamp(int(s),tz=datetime.timezone.utc).isoformat()
+	return datetime.datetime.fromtimestamp(int(s), tz=datetime.timezone.utc).isoformat()
 
-def block_detail (block_id, hash=False):
-		if hash == True:
+def block_detail(block_id, hash=False):
+		if hash:
 			raw_block = bc_daemon.getblock (block_id)
 		else:
 			block_hash = bc_daemon.getblockhash (int(block_id))
 			raw_block = bc_daemon.getblock(block_hash)
-		s = strtoout(raw_block["time"])
 
 		yield """
 			<div class="block_banner">
@@ -54,7 +53,7 @@ def block_detail (block_id, hash=False):
 
 				<div class="blockbanner_right">
 					Block Time: """
-		yield s
+		yield strtoout(raw_block["time"])
 		yield """
 				</div>
 			</div>
@@ -95,7 +94,7 @@ def block_detail (block_id, hash=False):
 		yield from detail_display ("Block Offset", raw_block["nOffset"])
 
 		if raw_block["height"] != 0:
-			for offset,prime in get_primes_from_block(raw_block):
+			for offset, prime in get_primes_from_block(raw_block):
 				yield from detail_display("Prime n+{}".format(offset), prime)
 
 		yield from detail_display ("Merkle Root", raw_block["merkleroot"])
@@ -107,7 +106,7 @@ def block_detail (block_id, hash=False):
 		def a(n="prev", m="previous"):
 			yield """<div class="blocknav_{n}">""".format(n=n)
 			if m + "blockhash" in raw_block:
-				yield '<a href="?block_hash=' + raw_block[m + "blockhash"]+"\" title='View "+m+" Block'>"
+				yield '<a href="?block_hash=' + raw_block[m + "blockhash"]+"\" title='View "+m+" block'>"
 			yield m + " block"
 			if m + "blockhash" in raw_block:
 				yield "</a>"
@@ -135,7 +134,7 @@ def block_detail (block_id, hash=False):
 
 		yield "</div>"
 
-def tx_detail (tx_id):
+def tx_detail(tx_id):
 		raw_tx = bc_daemon.getrawtransaction (tx_id)
 		yield from section_head ("Transaction: "+raw_tx["txid"])
 		yield from section_subhead ("Detailed Description")
@@ -172,9 +171,9 @@ def tx_detail (tx_id):
 
 		yield from section_head ("Raw Transaction Detail")
 
-		yield  '<textarea name="rawtrans" rows="25" cols="80" style="text-align:left;">'
+		yield '<textarea name="rawtrans" rows="25" cols="80" style="text-align:left;">'
 		yield cgi.escape(json.dumps(raw_tx,indent=4))
-		yield "</textarea><br><br>"
+		yield "</textarea>"
 
 def detail_display (title, data, html=False):
 		yield """<div class="detail_display">
