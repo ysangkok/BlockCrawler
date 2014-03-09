@@ -104,10 +104,6 @@ body {
 	line-height:32px;
 	}
 
-.blockoffset {
-	width: 100%;
-}
-	
 .section_head {
 	background-color:navy;
 	
@@ -146,6 +142,6 @@ body {
 .detail_data {
 	text-align:left;
 	line-height:32px;
-	min-width: 80%;
+	width: 80%;
 	}
 	

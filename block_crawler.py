@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 import os
 import json
-import bc_daemon
-import bc_layout
 
 def main(REQUEST):
 	# If a block hash was provided the block detail is shown
@@ -88,5 +86,7 @@ if __name__=="__main__":
 	else:
 		print("Content-Type: text/html")
 		print("")
+		import bc_daemon
+		import bc_layout
 		for i in main(cgi.FieldStorage()):
 			print(i,end="")

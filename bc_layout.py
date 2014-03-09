@@ -1,8 +1,10 @@
 import bc_daemon
 import cgi
+import textwrap
 import datetime
 import time
 import json
+from riecoin_tools.check_proof_of_work import get_primes_from_block
 
 def site_header (title, auth_list=""):
 		yield """<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -72,16 +74,12 @@ def block_detail (block_id, hash=False):
 						{size}
 					</div>
 				</div>
-
-
 				<div class="blockdetail_detail">
 					<div class="blockdetail_header"># of Confirmations</div>
 					<div class="blockdetail_content">
 						{confirmations}
 					</div>
 				</div>
-			</div>
-			<div class="blockdetail">
 				<div class="blockdetail_detail">
 					<div class="blockdetail_header">Block Bits</div>
 					<div class="blockdetail_content">
@@ -94,17 +92,13 @@ def block_detail (block_id, hash=False):
 						{difficulty}
 					</div>
 				</div>
-
-
-			</div>
-			<div class="blockdetail_detail blockoffset">
-				<div class="blockdetail_header">Block Offset</div>
-				<div class="blockdetail_content">
-					{nOffset}
-				</div>
 			</div>
 		""".format(**raw_block)
 
+		yield from detail_display ("Block Offset", raw_block["nOffset"])
+
+		for offset,prime in get_primes_from_block(raw_block):
+			yield from detail_display("Prime n+{}".format(offset), prime)
 
 		yield from detail_display ("Merkle Root", raw_block["merkleroot"])
 
@@ -193,7 +187,7 @@ def detail_display (title, data):
 
 		yield """<div class="detail_data">
 			{data}
-		</div>""".format(data=data)
+		</div>""".format(data=" ".join(textwrap.wrap(str(data))))
 		yield "</div>"
 		yield "<div style='clear:both'></div>"
 
