@@ -21,7 +21,7 @@ def site_header (title, auth_list=""):
 				</div>
 			</div>
 			<div id="page_wrap">
-		""".format(thisscript="block_chain.py", title=title)
+		""".format(thisscript=".", title=title)
 
 def site_footer ():
 	#	The page_wrap div is opened in the last line of the site_header function.
