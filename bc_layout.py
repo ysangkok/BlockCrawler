@@ -4,6 +4,7 @@ import textwrap
 import datetime
 import time
 import json
+import urllib.parse
 from riecoin_tools.check_proof_of_work import get_primes_from_block
 
 def site_header(title, auth_list=""):
@@ -96,11 +97,15 @@ def block_detail(block_id, hash=False):
 		if raw_block["height"] != 0:
 			factorization_delta, primes = next(get_primes_from_block(raw_block))
 			factorization, delta = factorization_delta
-			factorlist = "("
-			wrapnum = lambda i: "&shy;".join(textwrap.wrap(str(i), 70))
-			factorlist += ")*(".join("{}<sup>{}</sup>".format(wrapnum(i),j) if j != 1 else wrapnum(i) for i,j in factorization)
-			factorlist += ") + {}".format(delta)
+			wrapnum = lambda i: "&shy;".join(textwrap.wrap(str(i), 50))
+			factorlist = " &times; ".join("{}<sup>{}</sup>".format(wrapnum(i), j) if j != 1 else wrapnum(i) for i,j in factorization)
+			factorlist += " + {}".format(wrapnum(delta))
+			wolframalpha_query = " * ".join("{} ^ {}".format(i, j) if j != 1 else str(i) for i,j in factorization)
+			wolframalpha_query += " + {}".format(delta)
+			wolframalpha_query = "isprime(x + " + wolframalpha_query + ") where x="
+			wolframalpha_query += ",".join(str(t[0]) for t in primes)
 			yield from detail_display("n", factorlist, html=True)
+			yield from detail_display("WolframAlpha", "<a href='http://wolframalpha.com/input/?i={}'>Check primality</a>".format(cgi.escape(urllib.parse.quote_plus(wolframalpha_query))), html=True)
 			for offset, prime in primes:
 				yield from detail_display("Prime n+{}".format(offset), prime)
 
