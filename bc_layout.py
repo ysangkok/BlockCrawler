@@ -100,12 +100,19 @@ def block_detail(block_id, hash=False):
 			wrapnum = lambda i: "&shy;".join(textwrap.wrap(str(i), 50))
 			factorlist = " &times; ".join("{}<sup>{}</sup>".format(wrapnum(i), j) if j != 1 else wrapnum(i) for i,j in factorization)
 			factorlist += " + {}".format(wrapnum(delta))
-			wolframalpha_query = " * ".join("{} ^ {}".format(i, j) if j != 1 else str(i) for i,j in factorization)
-			wolframalpha_query += " + {}".format(delta)
-			wolframalpha_query = "isprime(x + " + wolframalpha_query + ") where x="
-			wolframalpha_query += ",".join(str(t[0]) for t in primes)
 			yield from detail_display("n", factorlist, html=True)
-			yield from detail_display("WolframAlpha", "<a href='http://wolframalpha.com/input/?i={}'>Check primality</a>".format(cgi.escape(urllib.parse.quote_plus(wolframalpha_query))), html=True)
+
+			common_query = " * ".join("{}^{}".format(i, j) if j != 1 else str(i) for i,j in factorization)
+			common_query += " + {}".format(delta)
+			comma_joined = ",".join(str(t[0]) for t in primes)
+
+			wolframalpha_query = "isprime(x + " + common_query + ") where x=" + comma_joined
+
+			gamma_query = "n = " + common_query.replace("^","**") + "\n#--\n[isprime(x + n) for x in [" + comma_joined + "]]\n#--"
+			html = "<a href='http://wolframalpha.com/input/?i={}'>WolframAlpha</a>".format(cgi.escape(urllib.parse.quote_plus(wolframalpha_query)))
+			html += " <a href='http://live.sympy.org/?evaluate={}'>SymPy Live</a>".format(cgi.escape(urllib.parse.quote_plus(gamma_query)))
+			yield from detail_display("Check primality", html, html=True)
+
 			for offset, prime in primes:
 				yield from detail_display("Prime n+{}".format(offset), prime)
 
