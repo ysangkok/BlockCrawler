@@ -94,7 +94,14 @@ def block_detail(block_id, hash=False):
 		yield from detail_display ("Block Offset", raw_block["nOffset"])
 
 		if raw_block["height"] != 0:
-			for offset, prime in get_primes_from_block(raw_block):
+			factorization_delta, primes = next(get_primes_from_block(raw_block))
+			factorization, delta = factorization_delta
+			factorlist = "("
+			wrapnum = lambda i: "&shy;".join(textwrap.wrap(str(i), 70))
+			factorlist += ")*(".join("{}<sup>{}</sup>".format(wrapnum(i),j) if j != 1 else wrapnum(i) for i,j in factorization)
+			factorlist += ") + {}".format(delta)
+			yield from detail_display("n", factorlist, html=True)
+			for offset, prime in primes:
 				yield from detail_display("Prime n+{}".format(offset), prime)
 
 		yield from detail_display ("Merkle Root", raw_block["merkleroot"])
