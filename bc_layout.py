@@ -1,5 +1,5 @@
 import bc_daemon
-import cgi
+import html
 import textwrap
 import datetime
 import time
@@ -100,7 +100,7 @@ def block_detail(block_id, hash=False):
 			wrapnum = lambda i: "&shy;".join(textwrap.wrap(str(i), 50))
 			factorlist = " &times; ".join("{}<sup>{}</sup>".format(wrapnum(i), j) if j != 1 else wrapnum(i) for i,j in factorization)
 			factorlist += " + {}".format(wrapnum(delta))
-			yield from detail_display("n", factorlist, html=True)
+			yield from detail_display("n", factorlist, htm=True)
 
 			common_query = " * ".join("{}^{}".format(i, j) if j != 1 else str(i) for i,j in factorization)
 			common_query += " + {}".format(delta)
@@ -109,16 +109,47 @@ def block_detail(block_id, hash=False):
 			wolframalpha_query = "isprime(x + " + common_query + ") where x=" + comma_joined
 
 			gamma_query = "n = " + common_query.replace("^","**") + "\n#--\n[isprime(x + n) for x in [" + comma_joined + "]]\n#--"
-			html = "<a href='http://wolframalpha.com/input/?i={}'>WolframAlpha</a>".format(cgi.escape(urllib.parse.quote_plus(wolframalpha_query)))
-			html += " <a href='http://live.sympy.org/?evaluate={}'>SymPy Live</a>".format(cgi.escape(urllib.parse.quote_plus(gamma_query)))
-			yield from detail_display("Check primality", html, html=True)
+			htm = "<a href='http://wolframalpha.com/input/?i={}'>WolframAlpha</a>".format(html.escape(urllib.parse.quote_plus(wolframalpha_query)))
+			htm += " <a href='http://live.sympy.org/?evaluate={}'>SymPy Live</a>".format(html.escape(urllib.parse.quote_plus(gamma_query)))
+
+			src = """
+package main
+
+import "fmt"
+import "math/big"
+
+func main() {
+	bi := big.NewInt(0)
+	line := \"""" + str(primes[0][1]) + """\"
+	
+	if _, ok := bi.SetString(line, 10); !ok {
+            fmt.Printf("couldn't interpret", line)
+        }
+	
+	fmt.Println(bi.ProbablyPrime(2))
+	bi = bi.Add(bi, big.NewInt(4))
+	fmt.Println(bi.ProbablyPrime(2))
+	bi = bi.Add(bi, big.NewInt(2))
+	fmt.Println(bi.ProbablyPrime(2))
+	bi = bi.Add(bi, big.NewInt(4))
+	fmt.Println(bi.ProbablyPrime(2))
+	bi = bi.Add(bi, big.NewInt(2))
+	fmt.Println(bi.ProbablyPrime(2))
+	bi = bi.Add(bi, big.NewInt(4))
+	fmt.Println(bi.ProbablyPrime(2))
+}
+"""
+
+			htm += " <a href='javascript:void(0)' onclick='document.forms[0].submit(); return false;'>Test with Go</a><form action='http://play.golang.org/compile' method='POST'><input type='hidden' name='version' value='2'><input type='hidden' name='body' value='{}'></form>".format(html.escape(src))
+
+			yield from detail_display("Check primality", htm, htm=True)
 
 			for offset, prime in primes:
 				yield from detail_display("Prime n+{}".format(offset), prime)
 
 		yield from detail_display ("Merkle Root", raw_block["merkleroot"])
 
-		yield from detail_display ("Block Hash", blockhash_link (raw_block["hash"]), html=True)
+		yield from detail_display ("Block Hash", blockhash_link (raw_block["hash"]), htm=True)
 
 		yield """<div class="blocknav">"""
 
@@ -191,10 +222,10 @@ def tx_detail(tx_id):
 		yield from section_head ("Raw Transaction Detail")
 
 		yield '<textarea name="rawtrans" rows="25" cols="80" style="text-align:left;">'
-		yield cgi.escape(json.dumps(raw_tx,indent=4))
+		yield html.escape(json.dumps(raw_tx,indent=4))
 		yield "</textarea>"
 
-def detail_display (title, data, html=False):
+def detail_display (title, data, htm=False):
 		yield """<div class="detail_display">
 			<div class="detail_title">
 				{title}
@@ -203,7 +234,7 @@ def detail_display (title, data, html=False):
 
 		yield """<div class="detail_data">
 			{data}
-		</div>""".format(data=data if html else "&shy;".join(cgi.escape(x) for x in textwrap.wrap(str(data), 50)))
+		</div>""".format(data=data if htm else "&shy;".join(html.escape(x) for x in textwrap.wrap(str(data), 50)))
 		yield "</div>"
 		yield "<div style='clear:both'></div>"
 
