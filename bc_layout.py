@@ -112,6 +112,8 @@ def block_detail(block_id, hash=False):
 			htm = "<a href='http://wolframalpha.com/input/?i={}'>WolframAlpha</a>".format(html.escape(urllib.parse.quote_plus(wolframalpha_query)))
 			htm += " <a href='http://live.sympy.org/?evaluate={}'>SymPy Live</a>".format(html.escape(urllib.parse.quote_plus(gamma_query)))
 
+			htm += " <a href='http://maxima-online.org/#?in=primep({})'>Maxima-Online</a>".format(html.escape(urllib.parse.quote_plus(common_query)))
+
 			src = """
 package main
 
@@ -196,7 +198,7 @@ def tx_detail(tx_id):
 		yield from detail_display ("TX Time", strtoout (raw_tx["time"]))
 		yield from detail_display ("Lock Time", raw_tx["locktime"])
 		yield from detail_display ("Confirmations", raw_tx["confirmations"])
-		yield from detail_display ("Block Hash", blockhash_link (raw_tx["blockhash"]), html=True)
+		yield from detail_display ("Block Hash", blockhash_link (raw_tx["blockhash"]), htm=True)
 		yield from detail_display ("HEX Data", raw_tx["hex"])
 		yield from section_head ("Transaction Inputs")
 		for key,txin in enumerate(raw_tx["vin"]):
@@ -205,7 +207,7 @@ def tx_detail(tx_id):
 				yield from detail_display ("Coinbase", txin["coinbase"])
 				yield from detail_display ("Sequence", txin["sequence"])
 			else:
-				yield from detail_display ("TX ID", tx_link (txin["txid"]), html=True)
+				yield from detail_display ("TX ID", tx_link (txin["txid"]), htm=True)
 				yield from detail_display ("TX Output", txin["vout"])
 				yield from detail_display ("TX Sequence", txin["sequence"])
 				yield from detail_display ("Script Sig (ASM)", txin["scriptSig"]["asm"])
