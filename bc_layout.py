@@ -1,4 +1,5 @@
 import bc_daemon
+import base64
 import html
 import textwrap
 import datetime
@@ -104,7 +105,8 @@ def block_detail(block_id, hash=False):
 
 			common_query = " * ".join("{}^{}".format(i, j) if j != 1 else str(i) for i,j in factorization)
 			common_query += " + {}".format(delta)
-			comma_joined = ",".join(str(t[0]) for t in primes)
+			offsets = [str(t[0]) for t in primes]
+			comma_joined = ",".join(offsets)
 
 			wolframalpha_query = "isprime(x + " + common_query + ") where x=" + comma_joined
 
@@ -112,7 +114,9 @@ def block_detail(block_id, hash=False):
 			htm = "<a href='http://wolframalpha.com/input/?i={}'>WolframAlpha</a>".format(html.escape(urllib.parse.quote_plus(wolframalpha_query)))
 			htm += " <a href='http://live.sympy.org/?evaluate={}'>SymPy Live</a>".format(html.escape(urllib.parse.quote_plus(gamma_query)))
 
-			htm += " <a href='http://maxima-online.org/#?in=primep({})'>Maxima-Online</a>".format(html.escape(urllib.parse.quote_plus(common_query)))
+			maxima_query = "x: " + common_query + ";\nprimep(x + " + ");\nprimep(x + ".join(offsets) + ");\n"
+
+			htm += " <a href='http://maxima-online.org/#?in={}'>Maxima-Online</a>".format(html.escape(urllib.parse.quote_plus(maxima_query)))
 
 			src = """
 package main
@@ -142,7 +146,7 @@ func main() {
 }
 """
 
-			htm += " <a href='javascript:void(0)' onclick='document.forms[0].submit(); return false;'>Test with Go</a><form action='http://play.golang.org/compile' method='POST'><input type='hidden' name='version' value='2'><input type='hidden' name='body' value='{}'></form>".format(html.escape(src))
+			htm += " <a href='javascript:void(0)' onclick='document.forms[0].submit(); return false;'>Test with Go</a> (<a href='data:text/plain;base64,{}'>program text</a>)<form target='_blank' action='http://play.golang.org/compile' method='POST'><input type='hidden' name='version' value='2'><input type='hidden' name='body' value='{}'></form>".format(html.escape(urllib.parse.quote(base64.b64encode(src.encode("utf-8")).decode("ascii"))), html.escape(src))
 
 			yield from detail_display("Check primality", htm, htm=True)
 
