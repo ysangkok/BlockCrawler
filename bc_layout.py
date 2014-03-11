@@ -185,7 +185,11 @@ func main() {
 		yield "</div>"
 
 def tx_detail(tx_id):
-		raw_tx = bc_daemon.getrawtransaction (tx_id)
+		try:
+			raw_tx = bc_daemon.getrawtransaction (tx_id)
+		except Exception as e:
+			yield from section_head(str(e))
+			return
 		yield from section_head ("Transaction: "+raw_tx["txid"])
 		yield from section_subhead ("Detailed Description")
 		yield from detail_display ("TX Version", raw_tx["version"])

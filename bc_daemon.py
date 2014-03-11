@@ -18,5 +18,5 @@ def getrawtransaction(tx_id, verbose=1):
 def wallet_fetch(request_array):
 	info = requests.post("http://127.0.0.1:28332/", auth=("", "boing9884"), data=json.dumps(request_array), headers={'content-type': 'application/json'}).json()
 	if "error" in info and info["error"] is not None:
-		raise Exception(repr(info))
+		raise Exception(info["error"]["message"])
 	return info["result"]
