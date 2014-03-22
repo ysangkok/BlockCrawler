@@ -89,7 +89,7 @@ if __name__ == "__main__":
 		f()
 	else:
 		if len(os.environ["PATH_INFO"]) < 2:
-			sys.stdout.buffer.write(b"Cache-Control: max-age=0\n")
+			sys.stdout.buffer.write(b"Cache-Control: no-store\n")
 			sys.stdout.buffer.flush()
 		if "block_crawler.css" in os.environ["PATH_INFO"]:
 			sys.stdout.buffer.write(b"Content-Type: text/css\n\n")
