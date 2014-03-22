@@ -30,7 +30,8 @@ def site_footer():
 	yield """
 			</div>
 			<div id="donor_box">
-				Donations: RTvFbTNfhurjiLPzZia1djJ7sUWVA6EtEe
+				Donations: RTvFbTNfhurjiLPzZia1djJ7sUWVA6EtEe<br>
+				Github: <a href="http://github.com/ysangkok/BlockCrawler">http://github.com/ysangkok/BlockCrawler</a>
 			</div>
 		</body>
 		</html>

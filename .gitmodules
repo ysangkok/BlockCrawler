@@ -1,0 +1,3 @@
+[submodule "riecoin_tools"]
+	path = riecoin_tools
+	url = https://github.com/ysangkok/riecoin-tools.git

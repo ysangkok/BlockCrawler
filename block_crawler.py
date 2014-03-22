@@ -76,11 +76,11 @@ def main(REQUEST):
 	yield from bc_layout.site_footer()
 
 if __name__ == "__main__":
-	import cgi, sys, os
+	import cgi, sys, os, os.path
 	import cgitb; cgitb.enable()
 	if "PATH_INFO" in os.environ and "block_crawler.css" in os.environ["PATH_INFO"]:
 		sys.stdout.buffer.write(b"Content-Type: text/css\n\n")
-		with open("/var/www/cgi-bin/block/block_crawler.css","rb") as f:
+		with open(os.path.dirname(os.path.abspath(__file__)) + "/block_crawler.css","rb") as f:
 			sys.stdout.buffer.write(f.read())
 		sys.stdout.buffer.flush()
 	else:

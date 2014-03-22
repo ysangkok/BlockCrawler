@@ -10,5 +10,5 @@ class HelloWorld(object):
         return "".join(a)
     index.exposed = True
  
-cherrypy.quickstart(HelloWorld(), '/', config={'/': {'response.stream': False}, '/block_crawler.css' : {'tools.staticfile.on' : True, 'tools.staticfile.filename': os.path.abspath('block_crawler.css')}}) #, '/static': {'tools.staticdir.dir': ".", "tools.staticdir.on": True}}
+cherrypy.quickstart(HelloWorld(), '/', config={'/': {'tools.caching.on': True, 'tools.caching.delay': 3600, 'response.stream': False}, '/block_crawler.css' : {'tools.staticfile.on' : True, 'tools.staticfile.filename': os.path.abspath('block_crawler.css')}}) #, '/static': {'tools.staticdir.dir': ".", "tools.staticdir.on": True}}
 
