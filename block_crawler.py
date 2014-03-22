@@ -79,23 +79,17 @@ if __name__ == "__main__":
 	import cgi, sys, os, os.path
 	import cgitb; cgitb.enable()
 
-	def f():
+	if ("QUERY_STRING" not in os.environ or len(os.environ["QUERY_STRING"]) < 2) and ("PATH_INFO" not in os.environ or len(os.environ["PATH_INFO"]) < 2):
+		sys.stdout.buffer.write(b"Cache-Control: no-store\n")
+		sys.stdout.buffer.flush()
+
+	if "PATH_INFO" in os.environ and "block_crawler.css" in os.environ["PATH_INFO"]:
+		sys.stdout.buffer.write(b"Content-Type: text/css\n\n")
+		with open(os.path.dirname(os.path.abspath(__file__)) + "/block_crawler.css","rb") as f:
+			sys.stdout.buffer.write(f.read())
+		sys.stdout.buffer.flush()
+	else:
 		print("Content-Type: text/html")
 		print("")
 		for i in main(cgi.FieldStorage()):
 			print(i,end="")
-
-	if "PATH_INFO" not in os.environ:
-		f()
-	else:
-		if len(os.environ["PATH_INFO"]) < 2:
-			sys.stdout.buffer.write(b"Cache-Control: no-store\n")
-			sys.stdout.buffer.flush()
-		if "block_crawler.css" in os.environ["PATH_INFO"]:
-			sys.stdout.buffer.write(b"Content-Type: text/css\n\n")
-			with open(os.path.dirname(os.path.abspath(__file__)) + "/block_crawler.css","rb") as f:
-				sys.stdout.buffer.write(f.read())
-			sys.stdout.buffer.flush()
-		else:
-			f()
-			
