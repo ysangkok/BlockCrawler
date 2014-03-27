@@ -21,7 +21,7 @@ def main(REQUEST):
 	elif "address" in REQUEST:
 		c = sqlite3.connect('riecoin_tools/stats/out/db')
 		res = c.execute('select * from balances where address=?', (REQUEST["address"].value,))
-		row = next(res)
+		row = res.fetchone()
 		if row:
 			yield "address {}<br>with balance <b>{}</b><br>was last used<br><b>{} days ago</b>".format(*row)
 		else:
