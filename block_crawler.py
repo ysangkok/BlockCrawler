@@ -2,6 +2,7 @@
 import json
 import bc_daemon
 import bc_layout
+import sqlite3
 
 def main(REQUEST):
 	# If a block hash was provided the block detail is shown
@@ -17,6 +18,13 @@ def main(REQUEST):
 	elif "transaction" in REQUEST:
 		yield from bc_layout.site_header("Transaction Detail Page")
 		yield from bc_layout.tx_detail(REQUEST["transaction"].value)
+	elif "address" in REQUEST:
+		c = sqlite3.connect('riecoin_tools/stats/out/db')
+		res = c.execute('select * from balances where address=?', (REQUEST["address"].value,))
+		row = next(res)
+		yield "address {}<br>with balance <b>{}</b><br>was last used<br><b>{} days ago</b>".format(*row)
+		c.close()
+		return
 	
 	# If there were no request parameters the menu is shown
 	else:
@@ -49,27 +57,37 @@ def main(REQUEST):
 		yield """<div id="site_menu">
 		<div class="menu_item">
 			<span class="menu_desc">Enter a Block Index / Height</span><br>
-			<form action="" method="post">
+			<form action="" method="get">
 			<input type="text" name="block_height" size="40">
-			<input type="submit" name="submit" value="Jump To Block">
+			<input type="submit" name="submit" value="Show Block">
 			</form>
 		</div>
 	
 		<div class="menu_item">
-			<span class="menu_desc">Enter A Block Hash</span><br>
-			<form action="" method="post">
+			<span class="menu_desc">Enter a Block Hash</span><br>
+			<form action="" method="get">
 			<input type="text" name="block_hash" size="40">
-			<input type="submit" name="submit" value="Jump To Block">
+			<input type="submit" name="submit" value="Show Block">
 			</form>
 		</div>
 	
 		<div class="menu_item">
-			<span class="menu_desc">Enter A Transaction ID</span><br>
-			<form action="" method="post">
+			<span class="menu_desc">Enter a Transaction ID</span><br>
+			<form action="" method="get">
 			<input type="text" name="transaction" size="40">
-			<input type="submit" name="submit" value="Jump To TX">
+			<input type="submit" name="submit" value="Show TX">
 			</form>
 		</div>
+
+		<div class="menu_item">
+			<span class="menu_desc">Enter an Address</span><br>
+			<form action="" method="get" target="addrresult">
+			<input type="text" name="address" size="40">
+			<input type="submit" name="submit" value="Show Balance">
+			</form>
+			<iframe src="about:blank" name="addrresult"></iframe>
+		</div>
+
 		</div>
 		<div style='clear:both'></div>"""
 	

@@ -7,6 +7,11 @@ body {
 	width:760px;
 	margin:0px auto;
 	}
+
+iframe {
+	border: 0;
+	width: 100%;
+}
 	
 #site_head {
 	margin-top: 10px;
@@ -29,11 +34,15 @@ body {
 	}
 
 #node_info {
-	float: left;
+	position: absolute;
 	margin: 2em !important;
 	margin-top: 0 !important;
 }
-	
+
+#site_menu {
+	padding-left: 18em;
+}
+
 .node_detail {
 	width:190px;
 	}
